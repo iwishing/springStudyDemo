@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+<!--配置spring的IOC，把service对象配置进去-->
+    <bean id="accountService" class="com.cbw.service.impl.AccountServiceImpl" ></bean>
+<!--配置Logger类-->
+    <bean id="Logger" class="com.cbw.utils.Logger"></bean>
+        <!--        配置AOP-->
+        <aop:config>
+<!--            配置切面-->
+            <aop:aspect id="logAdvice" ref="Logger">
+<!--                配置通知的类型，并且建立通知方法和切入点方法的关联-->
+<!--                    前置通知 -->
+                            <aop:before method="beforePrintLog" pointcut-ref="pc1"></aop:before>
+<!--                    后置通知-->
+                            <aop:after-returning method="afterReturningPrintLog" pointcut="execution(public void com.cbw.service.impl.AccountServiceImpl.saveAccount())"></aop:after-returning>
+<!--                    异常通知-->
+                            <aop:after-throwing method="afterThrowingPrintLog" pointcut="execution(public void com.cbw.service.impl.AccountServiceImpl.saveAccount())"></aop:after-throwing>
+<!--                    最终通知-->
+                            <aop:after method="afterPrintLog" pointcut="execution(public void com.cbw.service.impl.AccountServiceImpl.saveAccount())"></aop:after>
+<!--                    环绕通知-->
+                <aop:around method="aroundPrintLog" pointcut-ref="pc1"></aop:around>
+
+<!--                aop:pointcut标签，配置切入点表达式，id属性用于指定表达式的唯一标识，expression属性用于指定表达式内容，此标签写在aop:aspect标签内部，只能够该切面使用
+                                它也可以写在aop:aspect外面，此时所有切面均可使用，但是它要在使用它的切面之前配置，不然会报错
+-->
+                <aop:pointcut id="pc1" expression="execution(public void com.cbw.service.impl.AccountServiceImpl.saveAccount())"/>
+            </aop:aspect>
+        </aop:config>
+
+
+</beans>

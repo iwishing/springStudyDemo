@@ -1,0 +1,9 @@
+INSERT INTO myspringspace.account (id, name, money) VALUES (1, 'cbw', 98800);
+INSERT INTO myspringspace.account (id, name, money) VALUES (2, 'bbb', 2400);
+INSERT INTO myspringspace.account (id, name, money) VALUES (3, 'ccc', 1000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (5, 'ddd', 10000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (6, 'ccc', 1000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (7, 'ddd', 1000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (8, 'llll', 20000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (10, 'xxx', 10000);
+INSERT INTO myspringspace.account (id, name, money) VALUES (11, 'zzz', 1000);

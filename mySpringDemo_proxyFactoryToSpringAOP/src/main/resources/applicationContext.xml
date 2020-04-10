@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--    1.配置service对象-->
+    <bean id="accountService" class="com.cbw.service.impl.AccountServiceImpl_new">
+    <!--        注入accountDao-->
+    <property name="accountDao" ref="accountDao"></property>
+<!--    &lt;!&ndash;    注入事务管理器对象&ndash;&gt;
+    <property name="transactionManager" ref="transactionManager"></property>-->
+</bean>
+<!--······························································-->
+    <!--    2.配置Dao对象-->
+    <bean id="accountDao" class="com.cbw.dao.impl.AccountDaoImpl3">
+<!--        注入runner-->
+        <property name="runner" ref="runner"></property>
+        <!--注入ConnectionUtils-->
+        <property name="connectionUtils" ref="connectionUtils">
+        </property>
+    </bean>
+<!--······························································-->
+<!--    3.配置runner对象-->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+<!--        注入数据源,因为我们用了事务，所以不希望它能够自动注入连接池对象-->
+        <!--<constructor-arg name="ds" ref="dataSource"></constructor-arg>-->
+    </bean>
+<!--······························································-->
+<!--    4.配置数据源-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+<!--        注入连接数据库的必备信息-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/myspringspace?useUnicode=true&amp;characterEncoding=utf8"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="123456"></property>
+    </bean>
+<!--    ······························································-->
+<!--    配置ConncetionUtils工具类-->
+    <bean id="connectionUtils" class="com.cbw.utils.ConnectionUtils">
+<!--        注入连接池-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+<!--······························································-->
+<!--    创建事务管理器对象-->
+    <bean id="transactionManager" class="com.cbw.utils.TransactionManager">
+<!--        注入connectionUtils对象-->
+        <property name="connectionUtils" ref="connectionUtils"></property>
+    </bean>
+
+
+<!--    配置事务切面-->
+    <aop:config>
+        <aop:aspect id="transactionManager" ref="transactionManager">
+<!--            前置通知-->
+            <aop:before method="beginTranscation" pointcut-ref="pc1"></aop:before>
+<!--            后置通知-->
+            <aop:after-returning method="commit" pointcut-ref="pc1"></aop:after-returning>
+<!--            异常通知-->
+            <aop:after-throwing method="rollback" pointcut-ref="pc1"></aop:after-throwing>
+<!--            最终通知-->
+            <aop:after method="release" pointcut-ref="pc1"></aop:after>
+            <aop:pointcut id="pc1" expression="execution(* com.cbw.service.impl.*.*(..))"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
